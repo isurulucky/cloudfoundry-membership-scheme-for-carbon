@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Kubernetes membership scheme provides carbon cluster discovery on kubernetes.
+ * Cloud Foundry membership scheme provides carbon cluster discovery on Cloud Foundry.
  */
 public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
 
@@ -208,7 +208,7 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
 
         checkIfNullAndHandle(instances, "No instances found for app name " + applicationName);
 
-        List<String> ipAndPortTuples = new ArrayList<>();
+        List<String> ipAndPortTuples = new ArrayList<String>();
         for (InstanceInfo instanceInfo : instances.getInstanceInfoMap().values()) {
             // TODO: check port mapping stuff in CF, and append the port if necessary as below:
             // ipAndPortTuples.add(instanceInfo.getStats().getHost() + ":" + instanceInfo.getStats().getPort());
@@ -226,7 +226,7 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
 
     @Override
     public void joinGroup() throws ClusteringFault {
-        primaryHazelcastInstance.getCluster().addMembershipListener(new KubernetesMembershipSchemeListener());
+        primaryHazelcastInstance.getCluster().addMembershipListener(new CloudFoundryMembershipListener());
     }
 
     private Parameter getParameter(String name) {
@@ -234,9 +234,9 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
     }
 
     /**
-     * Kubernetes membership scheme listener
+     * CloudFoundryMembershipListener membership scheme listener
      */
-    private class KubernetesMembershipSchemeListener implements MembershipListener {
+    private class CloudFoundryMembershipListener implements MembershipListener {
 
         @Override
         public void memberAdded(MembershipEvent membershipEvent) {
