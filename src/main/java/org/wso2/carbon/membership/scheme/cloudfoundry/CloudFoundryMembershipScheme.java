@@ -88,7 +88,7 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
     @Override
     public void init() throws ClusteringFault {
         try {
-            log.info("Initializing kubernetes membership scheme...");
+            log.info("Initializing Cloud Foundry membership scheme...");
 
             nwConfig.getJoin().getMulticastConfig().setEnabled(false);
             nwConfig.getJoin().getAwsConfig().setEnabled(false);
@@ -96,12 +96,12 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
             tcpIpConfig.setEnabled(true);
 
             // Try to read parameters from env variables
-            String cfTokenApiUrl = System.getenv(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_TOKEN_API_URL);
-            String cfApiUrl = System.getenv(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_URL);
-            String cfApplicationNames = System.getenv(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_APPLICATION_NAMES);
-            String cfApiUsername = System.getenv(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_USERNAME);
-            String cfApiPassword = System.getenv(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_PASSWORD);
-            String skipCfApiSslVerification = System.getenv(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_SKIP_SSL_VERIFICATION);
+            String cfTokenApiUrl = System.getProperty(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_TOKEN_API_URL);
+            String cfApiUrl = System.getProperty(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_URL);
+            String cfApplicationNames = System.getProperty(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_APPLICATION_NAMES);
+            String cfApiUsername = System.getProperty(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_USERNAME);
+            String cfApiPassword = System.getProperty(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_PASSWORD);
+            String skipCfApiSslVerification = System.getProperty(Constants.PARAMETER_NAME_CLOUD_FOUNDRY_API_SKIP_SSL_VERIFICATION);
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(cfTokenApiUrl)) {
@@ -130,8 +130,7 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
 
             skipSSLVerification = Boolean.parseBoolean(skipCfApiSslVerification);
 
-            log.info(String.format("Cloud Foundry memberhsip scheme configuration: [api-url] %s [application-names] %s " +
-                    "[skip-api-ssl-verification] %s", cfApiUrl, cfApplicationNames, skipSSLVerification));
+            log.info(String.format("Cloud Foundry memberhsip scheme configuration: [api-url] %s [application-names] %s", cfApiUrl, cfApplicationNames));
 
             String[] cfAppNames = cfApplicationNames.split(",");
             for (String cfAppName : cfAppNames) {
@@ -144,7 +143,7 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
             log.info("Cloud Foundry membership scheme initialized successfully");
         } catch (Exception e) {
             log.error(e);
-            throw new ClusteringFault("Kubernetes membership initialization failed", e);
+            throw new ClusteringFault("Cloud Foundry membership initialization failed", e);
         }
     }
 
@@ -209,10 +208,17 @@ public class CloudFoundryMembershipScheme implements HazelcastMembershipScheme {
         checkIfNullAndHandle(instances, "No instances found for app name " + applicationName);
 
         List<String> ipAndPortTuples = new ArrayList<String>();
-        for (InstanceInfo instanceInfo : instances.getInstanceInfoMap().values()) {
+        for (Map.Entry<String, InstanceInfo> instanceInfo : instances.getInstanceInfoMap().entrySet()) {
             // TODO: check port mapping stuff in CF, and append the port if necessary as below:
             // ipAndPortTuples.add(instanceInfo.getStats().getHost() + ":" + instanceInfo.getStats().getPort());
-            ipAndPortTuples.add(instanceInfo.getStats().getHost());
+            if (instanceInfo.getValue().getStats().getHost() != null) {
+                ipAndPortTuples.add(instanceInfo.getValue().getStats().getHost());
+                log.info("IP address " + instanceInfo.getValue().getStats().getHost() + " added to" + " ipList for application: " +
+                        applicationName + ", instance id: " + instanceInfo.getKey() + ", state: " + instanceInfo.getValue().getState());
+            } else {
+                log.info("No ip address available for instance id " + instanceInfo.getKey() + " " +
+                        "of application: " + applicationName + ", state: " + instanceInfo.getValue().getState());
+            }
         }
 
         return ipAndPortTuples;
