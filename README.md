@@ -1,8 +1,10 @@
 ## CloudFoundry Membership Scheme for Carbon
 
+Please note that this code is still under development and testing
+
 Supports running a clustered deployment of WSO2 Carbon Servers on CloudFoundry. 
 
-### How to use
+#### How to use
 
 * Take a clone of the cloud foundry membershp scheme [repositpory] (https://github.com/isurulucky/cloudfoundry-membership-scheme-for-carbon.git)
 * Use mvn clean install to build it
