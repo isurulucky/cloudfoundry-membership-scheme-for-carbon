@@ -6,7 +6,8 @@ Supports running a clustered deployment of WSO2 Carbon Servers on CloudFoundry.
 
 #### How to use
 
-* Take a clone of the cloud foundry membershp scheme [repositpory] (https://github.com/isurulucky/cloudfoundry-membership-scheme-for-carbon.git)
+* Create an account for yourself in [Pivotal Web Services] (https://login.run.pivotal.io/login)
+* Take a clone of the cloud foundry membershp scheme [repository] (https://github.com/isurulucky/cloudfoundry-membership-scheme-for-carbon.git)
 * Use mvn clean install to build it
 * Locate the jar cloudfoundry-membership-scheme-<VERSION>.jar in the target directory
 * Copy the jar file to the repository/components/dropins directory of the relevant carbon server.
@@ -21,6 +22,7 @@ Supports running a clustered deployment of WSO2 Carbon Servers on CloudFoundry.
     2. Add the following line under the clustering element:
         <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.cloudfoundry.CloudFoundryMembershipScheme</parameter>
     3. Change the membershipScheme to 'cloudfoundry'
+* Refer the [blog post by Imesh] (https://medium.com/@imesh/how-to-deploy-wso2-middleware-on-cloud-foundry-3b50291734e2#.5m8m3u2aw) (imesh@apache.org) for details on running WSO2 products on Cloud Foundry. 
        
 
 License: Apache2
