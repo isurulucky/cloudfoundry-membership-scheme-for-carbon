@@ -14,9 +14,9 @@ Supports running a clustered deployment of WSO2 Carbon Servers on CloudFoundry.
     -DCLOUD_FOUNDRY_API_USERNAME=xxxxx \
     -DCLOUD_FOUNDRY_API_PASSWORD=yyyyy \
     -DCLOUD_FOUNDRY_APPLICATION_NAMES=<name_of_cloud_foundry_application> \ 
-* Make the following changes:
+* Make the following changes in the axis2.xml (repository/conf/axis2/axis2.xml) of the carbon server:
     1. Enable clustering by making 'enable=true' in clustering element
-    2. Add the following line under the clustering element of the axis2.xml (repository/conf/axis2/axis2.xml) of the carbon server:
+    2. Add the following line under the clustering element:
         <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.cloudfoundry.CloudFoundryMembershipScheme</parameter>
     3. Change the membershipScheme to 'cloudfoundry'
        
