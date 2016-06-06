@@ -16,7 +16,7 @@ Supports running a clustered deployment of WSO2 Carbon Servers on CloudFoundry.
     -DCLOUD_FOUNDRY_API_URL=https://api.run.pivotal.io/v2 \
     -DCLOUD_FOUNDRY_API_USERNAME=xxxxx \
     -DCLOUD_FOUNDRY_API_PASSWORD=yyyyy \
-    -DCLOUD_FOUNDRY_APPLICATION_NAMES=<name_of_cloud_foundry_application> \ 
+    -DCLOUD_FOUNDRY_APPLICATION_NAMES=NAME(S)_OF_CF_APPS_TO_FORM_A_CLUSTER \ 
 * Make the following changes in the axis2.xml (repository/conf/axis2/axis2.xml) of the carbon server:
     1. Enable clustering by making 'enable=true' in clustering element
     2. Add the following line under the clustering element:
